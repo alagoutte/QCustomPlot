@@ -2270,7 +2270,14 @@ void QCPAxisPainterPrivate::placeTickLabel(QCPPainter *painter, double position,
       cachedLabel = new CachedLabel;
       TickLabelData labelData = getTickLabelData(painter->font(), text);
       cachedLabel->offset = getTickLabelDrawOffset(labelData)+labelData.rotatedTotalBounds.topLeft();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+      QSize clSize = labelData.rotatedTotalBounds.size();
+      clSize *= painter->device()->devicePixelRatio();
+      newCachedLabel->pixmap = QPixmap(clSize);
+      newCachedLabel->pixmap.setDevicePixelRatio(painter->device()->devicePixelRatio());
+#else
       cachedLabel->pixmap = QPixmap(labelData.rotatedTotalBounds.size());
+#endif
       cachedLabel->pixmap.fill(Qt::transparent);
       QCPPainter cachePainter(&cachedLabel->pixmap);
       cachePainter.setPen(painter->pen());

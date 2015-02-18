@@ -373,6 +373,13 @@ QCustomPlot::QCustomPlot(QWidget *parent) :
   currentLocale.setNumberOptions(QLocale::OmitGroupSeparator);
   setLocale(currentLocale);
   
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+  QSize pbSize = mPaintBuffer.size();
+  pbSize *= devicePixelRatio();
+  mPaintBuffer = QPixmap(pbSize);
+  mPaintBuffer.setDevicePixelRatio(devicePixelRatio());
+#endif
+
   // create initial layers:
   mLayers.append(new QCPLayer(this, QLatin1String("background")));
   mLayers.append(new QCPLayer(this, QLatin1String("grid")));
@@ -1933,7 +1940,14 @@ void QCustomPlot::paintEvent(QPaintEvent *event)
 void QCustomPlot::resizeEvent(QResizeEvent *event)
 {
   // resize and repaint the buffer:
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+  QSize pbSize = event->size();
+  pbSize *= devicePixelRatio();
+  mPaintBuffer = QPixmap(pbSize);
+  mPaintBuffer.setDevicePixelRatio(devicePixelRatio());
+#else
   mPaintBuffer = QPixmap(event->size());
+#endif
   setViewport(rect());
   replot(rpQueued); // queued update is important here, to prevent painting issues in some contexts
 }
