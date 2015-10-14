@@ -283,7 +283,7 @@ double QCPBarsGroup::keyPixelOffset(const QCPBars *bars, double keyCoord)
   if (index >= 0)
   {
     int startIndex;
-    double lowerPixelWidth, upperPixelWidth;
+    double lowerPixelWidth = 0, upperPixelWidth = 0;
     if (baseBars.size() % 2 == 1 && index == (baseBars.size()-1)/2) // is center bar (int division on purpose)
     {
       return result;
@@ -877,7 +877,7 @@ QPolygonF QCPBars::getBarPolygon(double key, double value) const
   if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return QPolygonF(); }
   
   QPolygonF result;
-  double lowerPixelWidth, upperPixelWidth;
+  double lowerPixelWidth = 0, upperPixelWidth = 0;
   getPixelWidth(key, lowerPixelWidth, upperPixelWidth);
   double base = getStackedBaseValue(key, value >= 0);
   double basePixel = valueAxis->coordToPixel(base);
@@ -1035,7 +1035,7 @@ QCPRange QCPBars::getKeyRange(bool &foundRange, QCP::SignDomain inSignDomain) co
   // determine exact range of bars by including bar width and barsgroup offset:
   if (foundRange && mKeyAxis)
   {
-    double lowerPixelWidth, upperPixelWidth, keyPixel;
+    double lowerPixelWidth = 0 , upperPixelWidth = 0, keyPixel;
     // lower range bound:
     getPixelWidth(range.lower, lowerPixelWidth, upperPixelWidth);
     keyPixel = mKeyAxis.data()->coordToPixel(range.lower) + lowerPixelWidth;
